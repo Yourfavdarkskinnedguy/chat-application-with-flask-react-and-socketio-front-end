@@ -44,6 +44,7 @@ export default function chatscreen({}) {
   }, [groupname]);
 
   useEffect(() => {
+    
     navigation.setOptions({
       title: groupname || "Chat",
     });
@@ -102,9 +103,11 @@ export default function chatscreen({}) {
     const newMessage = { username, groupname, usermessage, timeHHmm };
     //console.log("newMessage:", newMessage);
     setactivegroup(groupname);
-    setMessageList((prev) => [...prev, newMessage]);
+    //setMessageList((prev) => [...prev, newMessage]);
 
     socket.emit('send_message', newMessage);
+    socket.emit('send_botmsg', newMessage)
+    
 
     setusermessage("");
     //console.log(messageList)
@@ -114,6 +117,7 @@ export default function chatscreen({}) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.flatcontainer}>
       <FlatList
         data={messagesForGroup}
         keyExtractor={(item, index) => index.toString()}
@@ -134,6 +138,7 @@ export default function chatscreen({}) {
           );
         }}
       />
+      </View>
 
       <View style={styles.inputcontainer}>
         <TextInput
@@ -154,7 +159,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  flatcontainer:{
+    flex:1,
+    padding:5,
+    marginBottom:90
+  },
   messagecontainer: {
+    flex:1,
+    overflow:'scroll',
     backgroundColor: "#D7E4E2",
     borderRadius: 10,
     padding: 10,
@@ -187,6 +199,7 @@ const styles = StyleSheet.create({
   otherMessage: {
     alignSelf: "flex-start",
     backgroundColor: "#E6E6E6", 
+    marginLeft:8
   },
   textinput: {
     flex: 1,
